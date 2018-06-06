@@ -1,7 +1,5 @@
 const ProductService = require('../services/product.service');
 
-_this = this;
-
 exports.getProducts = async function (req, res, next) {
     const page = req.query.page ? Number(req.query.page) : 1;
     const limit = req.query.limit ? Number(req.query.limit) : 6;
@@ -44,22 +42,6 @@ exports.getProduct = async function (req, res, next) {
 };
 
 exports.addProduct = async function (req, res, next) {
-    // let product = {
-    //     titleImage: req.body.titleImage,
-    //     images: [ ...req.body.images ],
-    //     make: req.body.make,
-    //     model: req.body.model,
-    //     year: req.body.year,
-    //     color: req.body.color,
-    //     odometer: req.body.odometer,
-    //     price: req.body.price,
-    //     condition: req.body.condition,
-    //     category: req.body.category,
-    //     type: req.body.type,
-    //     mileage: req.body.mileage,
-    //     family: req.body.family,
-    //     engine: req.body.engine
-    // };
 
     let product = { ...req.body };
 

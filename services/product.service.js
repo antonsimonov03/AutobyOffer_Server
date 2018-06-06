@@ -69,16 +69,10 @@ exports.updateProduct = async function (product) {
 
     if (!oldProduct) {
         return null;
-
     }
 
-    console.log('OLD', oldProduct);
-
     oldProduct = { ...product };
-
     delete oldProduct.id;
-
-    console.log('NEW', oldProduct);
 
     try {
         return await oldProduct.save();
