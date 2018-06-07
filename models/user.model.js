@@ -8,8 +8,9 @@ const user = mongoose.Schema({
     lastName: {type: String, required: true},
     phone: {type: String, required: true},
 
-    houseNumber: {type: Number, required: false},
+    building: {type: String, required: false},
     street: {type: String, required: false},
+    state: {type: String, required: false},
     city: {type: String, required: false},
     country: {type: String, required: false},
     postalCode: {type: String, required: false}
