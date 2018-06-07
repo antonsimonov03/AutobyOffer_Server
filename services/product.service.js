@@ -2,11 +2,7 @@ const Product = require('../models/product.model');
 
 _this = this;
 
-exports.getProducts = async function (query, page, limit) {
-    let options = {
-        page,
-        limit
-    };
+exports.getProducts = async function (query, options) {
 
     try {
 

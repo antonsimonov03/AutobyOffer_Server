@@ -1,12 +1,29 @@
 const ProductService = require('../services/product.service');
 
-exports.getProducts = async function (req, res, next) {
-    const page = req.query.page ? Number(req.query.page) : 1;
-    const limit = req.query.limit ? Number(req.query.limit) : 6;
+exports.getProducts = async function (req, res) {
+    const  { page, limit, ...query } = req.query;
+    let paginationOptions = {};
+
+    if (page) {
+        paginationOptions.page = Number(page);
+    }
+
+    if (limit) {
+        paginationOptions.limit = Number(limit);
+    }
+
+    if (query.yearFrom && query.yearTo) {
+        query.year = {
+            $gte: query.yearFrom,
+            $lte: query.yearTo
+        };
+        delete query.yearFrom;
+        delete query.yearTo;
+    }
 
     try {
 
-        const products = await ProductService.getProducts({}, page, limit);
+        const products = await ProductService.getProducts(query, paginationOptions);
 
         return res.status(200).json({
             status: 200,
@@ -21,7 +38,7 @@ exports.getProducts = async function (req, res, next) {
     }
 };
 
-exports.getProduct = async function (req, res, next) {
+exports.getProduct = async function (req, res) {
     const id = req.params.id;
 
     try {
@@ -41,7 +58,7 @@ exports.getProduct = async function (req, res, next) {
     }
 };
 
-exports.addProduct = async function (req, res, next) {
+exports.addProduct = async function (req, res) {
 
     let product = { ...req.body };
 
@@ -63,7 +80,7 @@ exports.addProduct = async function (req, res, next) {
     }
 };
 
-exports.updateProduct = async function (req, res, next) {
+exports.updateProduct = async function (req, res) {
     if (!req.body._id) {
 
         return res.status(400).json({
@@ -114,7 +131,7 @@ exports.updateProduct = async function (req, res, next) {
     }
 };
 
-exports.deleteProduct = async function (req, res, next) {
+exports.deleteProduct = async function (req, res) {
 
     const id = req.params.id;
 
