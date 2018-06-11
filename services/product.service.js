@@ -1,7 +1,5 @@
 const Product = require('../models/product.model');
 
-_this = this;
-
 exports.getProducts = async function (query, options) {
 
     try {
@@ -9,7 +7,7 @@ exports.getProducts = async function (query, options) {
         return await Product.paginate(query, options);
 
     } catch (e) {
-
+        console.log(e);
         throw Error('Error while paginating products');
     }
 };

@@ -1,7 +1,8 @@
 const ProductService = require('../services/product.service');
+const Product = require('../models/product.model');
 
 exports.getProducts = async function (req, res) {
-    const  { page, limit, ...query } = req.query;
+    const  { page, limit, ...dbQuery } = req.query;
     let paginationOptions = {};
 
     if (page) {
@@ -12,18 +13,34 @@ exports.getProducts = async function (req, res) {
         paginationOptions.limit = Number(limit);
     }
 
-    if (query.yearFrom && query.yearTo) {
-        query.year = {
-            $gte: query.yearFrom,
-            $lte: query.yearTo
+    if (dbQuery.last_years) {
+        dbQuery.year = {
+            $gte: new Date().getFullYear() - dbQuery.last_years,
+            $lte: new Date().getFullYear()
         };
-        delete query.yearFrom;
-        delete query.yearTo;
+        delete dbQuery.last_years;
     }
+
+    if (dbQuery.price_min && dbQuery.price_max) {
+        dbQuery.price = {
+            $gte: dbQuery.price_min,
+            $lte: dbQuery.price_max
+        };
+        delete dbQuery.price_min;
+        delete dbQuery.price_max;
+    }
+
+    if (Number(dbQuery.cond_new) && !Number(dbQuery.cond_used)) {
+        dbQuery.condition = 'New'
+    } else if (Number(dbQuery.cond_used) && !Number(dbQuery.cond_new)) {
+        dbQuery.condition = 'Used'
+    }
+    delete dbQuery.cond_new;
+    delete dbQuery.cond_used;
 
     try {
 
-        const products = await ProductService.getProducts(query, paginationOptions);
+        const products = await ProductService.getProducts(dbQuery, paginationOptions);
 
         return res.status(200).json({
             status: 200,
@@ -55,6 +72,32 @@ exports.getProduct = async function (req, res) {
             status: 400,
             message: e.message
         });
+    }
+};
+
+exports.getTypes = async (req, res) => {
+    try {
+
+        const types = await Product.find().distinct('type');
+
+        return res.status(200).send(types);
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send(e);
+    }
+};
+
+exports.getMakes = async (req, res) => {
+    try {
+
+        const types = await Product.find().distinct('make');
+
+        return res.status(200).send(types);
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send(e);
     }
 };
 
