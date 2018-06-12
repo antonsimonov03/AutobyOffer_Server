@@ -1,5 +1,4 @@
 const ProductService = require('../services/product.service');
-const Product = require('../models/product.model');
 
 exports.getProducts = async function (req, res) {
     const  { page, limit, ...dbQuery } = req.query;
@@ -78,7 +77,7 @@ exports.getProduct = async function (req, res) {
 exports.getTypes = async (req, res) => {
     try {
 
-        const types = await Product.find().distinct('type');
+        const types = await ProductService.getDistinct('type');
 
         return res.status(200).send(types);
 
@@ -91,9 +90,9 @@ exports.getTypes = async (req, res) => {
 exports.getMakes = async (req, res) => {
     try {
 
-        const types = await Product.find().distinct('make');
+        const makes = await ProductService.getDistinct('make');
 
-        return res.status(200).send(types);
+        return res.status(200).send(makes);
 
     } catch (e) {
         console.log(e);

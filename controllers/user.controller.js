@@ -1,8 +1,8 @@
-const User = require('../models/user.model');
+const UserService = require('../services/user.service');
 
 exports.getAll = async (req, res) => {
     try {
-        const users = await User.find({}).select('-password -__v');
+        const users = await UserService.getUsers();
 
         return res.status(200).send(users);
     } catch (error) {
@@ -16,7 +16,7 @@ exports.getById = async (req, res) => {
     const id = req.params.id;
 
     try {
-        const user = await User.findOne({_id: id}).select('-password -__v');
+        const user = await UserService.getUser(id);
 
         return res.status(200).send(user);
     } catch (error) {
@@ -32,13 +32,10 @@ exports.update = async (req, res) => {
     const id = req.params.id;
 
     try {
-        const user = await User.findOne({_id: id});
 
-        let newUser = Object.assign(new User(user), { ...req.body });
+        await UserService.update(id, req.body);
 
-        await newUser.save();
-
-        return res.status(200).json(await User.findOne({_id: newUser._id}).select('-password -__v'));
+        return res.status(200).json(await UserService.getUser(id));
 
     } catch (error) {
         console.log(error);

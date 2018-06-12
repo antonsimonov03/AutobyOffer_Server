@@ -23,6 +23,31 @@ exports.getProduct = async function (id) {
     }
 };
 
+exports.getDistinct = async (field) => {
+    try {
+
+        return await Product.find().distinct(field);
+
+
+    } catch (e) {
+        console.log(e);
+        throw Error(`Error while getting ${field}`)
+    }
+};
+
+exports.getMakes = async (req, res) => {
+    try {
+
+        const types = await Product.find().distinct('make');
+
+        return res.status(200).send(types);
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send(e);
+    }
+};
+
 exports.addProduct = async function (product) {
     let newProduct = new Product({
        titleImage: product.titleImage,
